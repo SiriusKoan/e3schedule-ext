@@ -1,0 +1,16 @@
+{
+    "name": "e3schedule",
+    "description": "e3schedule",
+    "version": "0.1",
+    "manifest_version": 3,
+    "permissions": ["activeTab", "cookies", "scripting", "https://*/*", "http://*/*"],
+    "host_permissions": ["https://e3.nycu.edu.tw/*"],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "e3schedule",
+        "default_icon": "img/icon.png"
+    }
+}
