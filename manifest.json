@@ -11,6 +11,6 @@
     "action": {
         "default_popup": "popup.html",
         "default_title": "e3schedule",
-        "default_icon": "img/icon.png"
+        "default_icon": "img/logo.png"
     }
 }

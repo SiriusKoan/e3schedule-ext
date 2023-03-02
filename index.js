@@ -3,10 +3,6 @@ const port = chrome.runtime.connect({
     name: "connection"
 });
 
-var in_progress = [];
-var submitted = [];
-var overdue = [];
-
 port.onMessage.addListener(function(response) {
     if (response["type"] == "main") {
         let html = document.createElement("div");
@@ -26,6 +22,7 @@ port.onMessage.addListener(function(response) {
         html.setAttribute('style', 'display: none;');
         html.innerHTML = response["data"];
         // in_progress
+        let in_progress = [];
         let in_progress_names = html.querySelectorAll("#news-view-basic-in-progress tbody tr .instancename")
         let in_progress_start_dates = html.querySelectorAll("#news-view-basic-in-progress tbody tr td:nth-child(2)")
         let in_progress_due_dates = html.querySelectorAll("#news-view-basic-in-progress tbody tr td:nth-child(3)")
@@ -41,6 +38,7 @@ port.onMessage.addListener(function(response) {
             });
         }
         // submitted
+        let submitted = [];
         let submitted_names = html.querySelectorAll("#news-view-nofile2-tobegraded-in-progress tbody tr .instancename")
         let submitted_start_dates = html.querySelectorAll("#news-view-nofile2-tobegraded-in-progress tbody tr td:nth-child(2)")
         let submitted_due_dates = html.querySelectorAll("#news-view-nofile2-tobegraded-in-progress tbody tr td:nth-child(3)")
@@ -56,6 +54,7 @@ port.onMessage.addListener(function(response) {
             });
         }
         // overdue
+        let overdue = [];
         let overdue_names = html.querySelectorAll("#news-view-nofile2-notsubmitted-in-progress tbody tr .instancename")
         let overdue_start_dates = html.querySelectorAll("#news-view-nofile2-notsubmitted-in-progress tbody tr td:nth-child(2)")
         let overdue_due_dates = html.querySelectorAll("#news-view-nofile2-notsubmitted-in-progress tbody tr td:nth-child(3)")
@@ -63,7 +62,7 @@ port.onMessage.addListener(function(response) {
         let overdue_links = html.querySelectorAll("#news-view-nofile2-notsubmitted-in-progress tbody tr .aalink")
         for (let i = 0; i < overdue_names.length; i++) {
             overdue.push({
-                "name": overdue_start_dates[i].innerText,
+                "name": overdue_names[i].innerText,
                 "start_date": overdue_start_dates[i].innerText,
                 "due_date": overdue_due_dates[i].innerText,
                 "students_count": overdue_students_counts[i].innerText,
@@ -73,63 +72,39 @@ port.onMessage.addListener(function(response) {
         // render
         let in_progress_container = document.getElementById("in-progress-container");
         for (let i = 0; i < in_progress.length; i++) {
-            let row = document.createElement("tr");
-            let name_ele = document.createElement("td");
-            name_ele.innerText = in_progress[i]["name"];
-            row.appendChild(name_ele);
-            let start_date_ele = document.createElement("td");
-            start_date_ele.innerText = in_progress[i]["start_date"];
-            row.appendChild(start_date_ele);
-            let due_date_ele = document.createElement("td");
-            due_date_ele.innerText = in_progress[i]["due_date"];
-            row.appendChild(due_date_ele);
-            let students_count_ele = document.createElement("td");
-            students_count_ele.innerText = in_progress[i]["students_count"];
-            row.appendChild(students_count_ele);
-            let link_ele = document.createElement("td");
-            link_ele.innerText = in_progress[i]["link"];
-            row.appendChild(link_ele);
-            in_progress_container.appendChild(row);
+            let row = `
+            <td><a href="${in_progress[i]["link"]}">${in_progress[i]["name"]}</a></td>
+            <td>${in_progress[i]["start_date"]}</td>
+            <td>${in_progress[i]["due_date"]}</td>
+            <td>${in_progress[i]["students_count"]}</td>
+            `
+            let row_ele = document.createElement("tr");
+            row_ele.innerHTML = row;
+            in_progress_container.appendChild(row_ele);
         }
         let submitted_container = document.getElementById("submitted-container");
         for (let i = 0; i < submitted.length; i++) {
-            let row = document.createElement("tr");
-            let name_ele = document.createElement("td");
-            name_ele.innerText = submitted[i]["name"];
-            row.appendChild(name_ele);
-            let start_date_ele = document.createElement("td");
-            start_date_ele.innerText = submitted[i]["start_date"];
-            row.appendChild(start_date_ele);
-            let due_date_ele = document.createElement("td");
-            due_date_ele.innerText = submitted[i]["due_date"];
-            row.appendChild(due_date_ele);
-            let students_count_ele = document.createElement("td");
-            students_count_ele.innerText = submitted[i]["students_count"];
-            row.appendChild(students_count_ele);
-            let link_ele = document.createElement("td");
-            link_ele.innerText = submitted[i]["link"];
-            row.appendChild(link_ele);
-            submitted_container.appendChild(row);
+            let row = `
+            <td><a href="${submitted[i]["link"]}">${submitted[i]["name"]}</a></td>
+            <td>${submitted[i]["start_date"]}</td>
+            <td>${submitted[i]["due_date"]}</td>
+            <td>${submitted[i]["students_count"]}</td>
+            `
+            let row_ele = document.createElement("tr");
+            row_ele.innerHTML = row;
+            submitted_container.appendChild(row_ele);
         }
         let overdue_container = document.getElementById("overdue-container");
         for (let i = 0; i < overdue.length; i++) {
-            let row = document.createElement("tr");
-            let name_ele = document.createElement("td");
-            name_ele.innerText = overdue[i]["name"];
-            row.appendChild(name_ele);
-            let start_date_ele = document.createElement("td");
-            start_date_ele.innerText = overdue[i]["start_date"];
-            row.appendChild(start_date_ele);
-            let due_date_ele = document.createElement("td");
-            due_date_ele.innerText = overdue[i]["due_date"];
-            row.appendChild(due_date_ele);
-            let students_count_ele = document.createElement("td");
-            students_count_ele.innerText = overdue[i]["students_count"];
-            row.appendChild(students_count_ele);
-            let link_ele = document.createElement("td");
-            link_ele.innerText = overdue[i]["link"];
-            row.appendChild(link_ele);
-            overdue_container.appendChild(row);
+            let row = `
+            <td><a href="${overdue[i]["link"]}">${overdue[i]["name"]}</a></td>
+            <td>${overdue[i]["start_date"]}</td>
+            <td>${overdue[i]["due_date"]}</td>
+            <td>${overdue[i]["students_count"]}</td>
+            `
+            let row_ele = document.createElement("tr");
+            row_ele.innerHTML = row;
+            overdue_container.appendChild(row_ele);
         }
     }
 });

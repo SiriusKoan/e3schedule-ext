@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
   </head>
   <body>
-    <table id="in-progress-container"></table>
-    <table id="submitted-container"></table>
-    <table id="overdue-container"></table>
+    <h1 id="main-title">E3 Schedule</h1>
+    <hr>
+    <div id="main-container">
+        <div>
+            <h2 id="in-progress-title" class="title">In Progress</h2>
+            <table id="in-progress-container"></table>
+        </div>
+        <div>
+            <h2 id="submitted-title" class="title">Submitted</h2>
+            <table id="submitted-container"></table>
+        </div>
+        <div>
+            <h2 id="overdue-title" class="title">Overdue</h2>
+            <table id="overdue-container"></table>
+        </div>
+    </div>
     <script src="index.js"></script>
   </body>
 </html>
