@@ -66,15 +66,12 @@ hr {
   margin: 3px 10px;
 }
 
-th {
-  text-align: center;
-}
-
 th, td {
   border: 1px solid;
   width: 100px;
   min-height: 20px;
   padding: 5px;
+  text-align: center;
 }
 
 tr:nth-child(odd) {

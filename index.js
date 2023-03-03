@@ -3,6 +3,8 @@ const port = chrome.runtime.connect({
     name: "connection"
 });
 
+const students_count_regex = /[0-9]+/g
+
 port.onMessage.addListener(function(response) {
     if (response["type"] == "main") {
         let html = document.createElement("div");
@@ -42,7 +44,7 @@ port.onMessage.addListener(function(response) {
                 "name": in_progress_names[i].innerText,
                 "start_date": in_progress_start_dates[i].innerText,
                 "due_date": in_progress_due_dates[i].innerText,
-                "students_count": in_progress_students_counts[i].innerText,
+                "students_count": in_progress_students_counts[i].innerText.match(students_count_regex).join("/"),
                 "link": in_progress_links[i].href,
             });
         }
@@ -58,7 +60,7 @@ port.onMessage.addListener(function(response) {
                 "name": submitted_names[i].innerText,
                 "start_date": submitted_start_dates[i].innerText,
                 "due_date": submitted_due_dates[i].innerText,
-                "students_count": submitted_students_counts[i].innerText,
+                "students_count": submitted_students_counts[i].innerText.match(students_count_regex).join("/"),
                 "link": submitted_links[i].href,
             });
         }
@@ -74,7 +76,7 @@ port.onMessage.addListener(function(response) {
                 "name": overdue_names[i].innerText,
                 "start_date": overdue_start_dates[i].innerText,
                 "due_date": overdue_due_dates[i].innerText,
-                "students_count": overdue_students_counts[i].innerText,
+                "students_count": overdue_students_counts[i].innerText.match(students_count_regex).join("/"),
                 "link": overdue_links[i].href,
             });
         }
