@@ -9,6 +9,15 @@ port.onMessage.addListener(function(response) {
         html.setAttribute('style', 'display: none;');
         html.innerHTML = response["data"];
         let course_links = html.querySelectorAll("#layer2_right_current_course_stu .course-link");
+        console.log(course_links)
+        if (course_links.length == 0) {
+            console.log("no courses");
+            let notification_ele = document.getElementById("notification");
+            notification_ele.innerText = "No courses found, maybe you haven't loged in.";
+            notification_ele.style.display = "block";
+            return;
+        }
+        
         for (let i = 0; i < course_links.length; i++) {
             let id = course_links[i].href.split("id=")[1];
             port.postMessage({
