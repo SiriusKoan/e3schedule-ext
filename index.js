@@ -84,7 +84,7 @@ port.onMessage.addListener(function(response) {
         let in_progress_container = document.getElementById("in-progress-container");
         for (let i = 0; i < in_progress.length; i++) {
             let row = `
-            <td><a href="${in_progress[i]["link"]}">${in_progress[i]["name"]}</a></td>
+            <td><a href="${in_progress[i]["link"]}" target="_blank">${in_progress[i]["name"]}</a></td>
             <td>${in_progress[i]["start_date"]}</td>
             <td>${in_progress[i]["due_date"]}</td>
             <td>${in_progress[i]["students_count"]}</td>
@@ -96,7 +96,7 @@ port.onMessage.addListener(function(response) {
         let submitted_container = document.getElementById("submitted-container");
         for (let i = 0; i < submitted.length; i++) {
             let row = `
-            <td><a href="${submitted[i]["link"]}">${submitted[i]["name"]}</a></td>
+            <td><a href="${submitted[i]["link"]}" target="_blank">${submitted[i]["name"]}</a></td>
             <td>${submitted[i]["start_date"]}</td>
             <td>${submitted[i]["due_date"]}</td>
             <td>${submitted[i]["students_count"]}</td>
@@ -108,7 +108,7 @@ port.onMessage.addListener(function(response) {
         let overdue_container = document.getElementById("overdue-container");
         for (let i = 0; i < overdue.length; i++) {
             let row = `
-            <td><a href="${overdue[i]["link"]}">${overdue[i]["name"]}</a></td>
+            <td><a href="${overdue[i]["link"]}" target="_blank">${overdue[i]["name"]}</a></td>
             <td>${overdue[i]["start_date"]}</td>
             <td>${overdue[i]["due_date"]}</td>
             <td>${overdue[i]["students_count"]}</td>

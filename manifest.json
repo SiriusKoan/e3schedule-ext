@@ -3,7 +3,7 @@
     "description": "e3schedule",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["activeTab", "cookies", "scripting", "https://*/*", "http://*/*"],
+    "permissions": ["cookies"],
     "host_permissions": ["https://e3.nycu.edu.tw/*"],
     "background": {
         "service_worker": "background.js"
