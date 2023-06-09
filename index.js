@@ -19,7 +19,7 @@ port.onMessage.addListener(function(response) {
             notification_ele.style.display = "block";
             return;
         }
-        
+
         for (let i = 0; i < course_links.length; i++) {
             let id = course_links[i].href.split("id=")[1];
             port.postMessage({
@@ -120,13 +120,30 @@ port.onMessage.addListener(function(response) {
     }
 });
 
-
-chrome.cookies.get({
-    url: "https://e3.nycu.edu.tw/my/",
-    name: "MoodleSession"
-}, function(d) {
-    port.postMessage({
-        "type": "main",
-        "session": d.value
-    });
-})
+document.getElementById("refresh-btn").addEventListener("click", function() {
+    chrome.cookies.get({
+        url: "https://e3.nycu.edu.tw/my/",
+        name: "MoodleSession"
+    }, function(d) {
+        // flush all rows in in-progress-container
+        let in_progress_container = document.getElementById("in-progress-container");
+        while (in_progress_container.children.length > 1) {
+            in_progress_container.removeChild(in_progress_container.lastChild);
+        }
+        // flush all rows in submitted-container
+        let submitted_container = document.getElementById("submitted-container");
+        while (submitted_container.children.length > 1) {
+            submitted_container.removeChild(submitted_container.lastChild);
+        }
+        // flush all rows in overdue-container
+        let overdue_container = document.getElementById("overdue-container");
+        while (overdue_container.children.length > 1) {
+            overdue_container.removeChild(overdue_container.lastChild);
+        }
+        // fetch data
+        port.postMessage({
+            "type": "main",
+            "session": d.value
+        });
+    })
+});
