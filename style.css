@@ -32,6 +32,8 @@
   margin: 5px 10px;
   cursor: pointer;
   font-size: 20px;
+  position: fixed;
+  right: 10px;
 }
 
 #refresh-btn:hover {
