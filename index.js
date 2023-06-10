@@ -48,6 +48,9 @@ port.onMessage.addListener(function(response) {
                 "link": in_progress_links[i].href,
             });
         }
+        // save in_progress to local storage
+        save_cache(in_progress, "in_progress");
+        render_table("in-progress", in_progress);
         // submitted
         let submitted = [];
         let submitted_names = html.querySelectorAll("#news-view-nofile2-tobegraded-in-progress tbody tr .instancename")
@@ -64,6 +67,9 @@ port.onMessage.addListener(function(response) {
                 "link": submitted_links[i].href,
             });
         }
+        // save submitted to local storage
+        save_cache(submitted, "submitted");
+        render_table("submitted", submitted);
         // overdue
         let overdue = [];
         let overdue_names = html.querySelectorAll("#news-view-nofile2-notsubmitted-in-progress tbody tr .instancename")
@@ -80,70 +86,98 @@ port.onMessage.addListener(function(response) {
                 "link": overdue_links[i].href,
             });
         }
-        // render
-        let in_progress_container = document.getElementById("in-progress-container");
-        for (let i = 0; i < in_progress.length; i++) {
-            let row = `
-            <td><a href="${in_progress[i]["link"]}" target="_blank">${in_progress[i]["name"]}</a></td>
-            <td>${in_progress[i]["start_date"]}</td>
-            <td>${in_progress[i]["due_date"]}</td>
-            <td>${in_progress[i]["students_count"]}</td>
-            `
-            let row_ele = document.createElement("tr");
-            row_ele.innerHTML = row;
-            in_progress_container.appendChild(row_ele);
-        }
-        let submitted_container = document.getElementById("submitted-container");
-        for (let i = 0; i < submitted.length; i++) {
-            let row = `
-            <td><a href="${submitted[i]["link"]}" target="_blank">${submitted[i]["name"]}</a></td>
-            <td>${submitted[i]["start_date"]}</td>
-            <td>${submitted[i]["due_date"]}</td>
-            <td>${submitted[i]["students_count"]}</td>
-            `
-            let row_ele = document.createElement("tr");
-            row_ele.innerHTML = row;
-            submitted_container.appendChild(row_ele);
-        }
-        let overdue_container = document.getElementById("overdue-container");
-        for (let i = 0; i < overdue.length; i++) {
-            let row = `
-            <td><a href="${overdue[i]["link"]}" target="_blank">${overdue[i]["name"]}</a></td>
-            <td>${overdue[i]["start_date"]}</td>
-            <td>${overdue[i]["due_date"]}</td>
-            <td>${overdue[i]["students_count"]}</td>
-            `
-            let row_ele = document.createElement("tr");
-            row_ele.innerHTML = row;
-            overdue_container.appendChild(row_ele);
-        }
+        // save overdue to local storage
+        save_cache(overdue, "overdue");
+        render_table("overdue", overdue);
     }
 });
 
-document.getElementById("refresh-btn").addEventListener("click", function() {
+function save_cache(data, key) {
+    chrome.storage.local.get([key], function(result) {
+        tmp = result[key] || [];
+        for (let i = 0; i < data.length; i++) {
+            tmp.push(data[i]);
+        }
+        chrome.storage.local.set({
+            [key]: tmp
+        }, function() {
+            console.log(key + " saved");
+        });
+    });
+}
+
+function flush_cache() {
+    chrome.storage.local.remove(["in_progress", "submitted", "overdue"], function() {
+        console.log("cache flushed");
+    });
+}
+
+function flush_table() {
+    // flush all rows in in-progress-container
+    let in_progress_container = document.getElementById("in-progress-container");
+    while (in_progress_container.children.length > 1) {
+        in_progress_container.removeChild(in_progress_container.lastChild);
+    }
+    // flush all rows in submitted-container
+    let submitted_container = document.getElementById("submitted-container");
+    while (submitted_container.children.length > 1) {
+        submitted_container.removeChild(submitted_container.lastChild);
+    }
+    // flush all rows in overdue-container
+    let overdue_container = document.getElementById("overdue-container");
+    while (overdue_container.children.length > 1) {
+        overdue_container.removeChild(overdue_container.lastChild);
+    }
+}
+
+function fetch_course_data() {
     chrome.cookies.get({
         url: "https://e3.nycu.edu.tw/my/",
         name: "MoodleSession"
     }, function(d) {
-        // flush all rows in in-progress-container
-        let in_progress_container = document.getElementById("in-progress-container");
-        while (in_progress_container.children.length > 1) {
-            in_progress_container.removeChild(in_progress_container.lastChild);
-        }
-        // flush all rows in submitted-container
-        let submitted_container = document.getElementById("submitted-container");
-        while (submitted_container.children.length > 1) {
-            submitted_container.removeChild(submitted_container.lastChild);
-        }
-        // flush all rows in overdue-container
-        let overdue_container = document.getElementById("overdue-container");
-        while (overdue_container.children.length > 1) {
-            overdue_container.removeChild(overdue_container.lastChild);
-        }
         // fetch data
         port.postMessage({
             "type": "main",
             "session": d.value
         });
     })
+}
+
+function render_table(type, data) {
+    console.log(type, data)
+    let container = document.getElementById(`${type}-container`);
+    for (let i = 0; i < data.length; i++) {
+        let row = `
+        <td><a href="${data[i]["link"]}" target="_blank">${data[i]["name"]}</a></td>
+        <td>${data[i]["start_date"]}</td>
+        <td>${data[i]["due_date"]}</td>
+        <td>${data[i]["students_count"]}</td>
+        `
+        let row_ele = document.createElement("tr");
+        row_ele.innerHTML = row;
+        container.appendChild(row_ele);
+    }
+}
+
+window.onload = function() {
+    // get cache data from local storage
+    chrome.storage.local.get(["in_progress", "submitted", "overdue"], function(data) {
+        console.log(data)
+        if (data["in_progress"] && data["submitted"] && data["overdue"]) {
+            render_table("in-progress", data["in_progress"]);
+            render_table("submitted", data["submitted"]);
+            render_table("overdue", data["overdue"]);
+        }
+        else {
+            flush_cache();
+            flush_table();
+            fetch_course_data();
+        }
+    });
+}
+
+document.getElementById("refresh-btn").addEventListener("click", function() {
+    flush_cache();
+    flush_table();
+    fetch_course_data();
 });
