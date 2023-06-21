@@ -89,6 +89,12 @@ port.onMessage.addListener(function(response) {
         // save overdue to local storage
         save_cache(overdue, "overdue");
         render_table("overdue", overdue);
+        // save update time
+        chrome.storage.local.set({
+            "update_time": new Date().getTime()
+        }, function() {
+            console.log("update_time saved");
+        });
     }
 });
 
@@ -144,7 +150,6 @@ function fetch_course_data() {
 }
 
 function render_table(type, data) {
-    console.log(type, data)
     let container = document.getElementById(`${type}-container`);
     for (let i = 0; i < data.length; i++) {
         let row = `
@@ -161,9 +166,9 @@ function render_table(type, data) {
 
 window.onload = function() {
     // get cache data from local storage
-    chrome.storage.local.get(["in_progress", "submitted", "overdue"], function(data) {
-        console.log(data)
-        if (data["in_progress"] && data["submitted"] && data["overdue"]) {
+    chrome.storage.local.get(["in_progress", "submitted", "overdue", "update_time"], function(data) {
+        time_diff = (new Date() - new Date(data["update_time"])) / 1000;
+        if (data["in_progress"] && data["submitted"] && data["overdue"] && time_diff < 60 * 60 * 1) {
             render_table("in-progress", data["in_progress"]);
             render_table("submitted", data["submitted"]);
             render_table("overdue", data["overdue"]);
