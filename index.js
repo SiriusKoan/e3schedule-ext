@@ -32,6 +32,8 @@ port.onMessage.addListener(function(response) {
         let html = document.createElement("div");
         html.setAttribute('style', 'display: none;');
         html.innerHTML = response["data"];
+        let course_name = html.querySelector("#page-header .page-context-header h1").innerText;
+        course_name = /【[0-9]{3}.】[0-9]+(.*)/.exec(course_name.split(" ")[0])[1];
         // in_progress
         let in_progress = [];
         let in_progress_names = html.querySelectorAll("#news-view-basic-in-progress tbody tr .instancename")
@@ -42,6 +44,7 @@ port.onMessage.addListener(function(response) {
         for (let i = 0; i < in_progress_names.length; i++) {
             in_progress.push({
                 "name": in_progress_names[i].innerText,
+                "course_name": course_name,
                 "start_date": in_progress_start_dates[i].innerText,
                 "due_date": in_progress_due_dates[i].innerText,
                 "students_count": in_progress_students_counts[i].innerText.match(students_count_regex).join("/"),
@@ -61,6 +64,7 @@ port.onMessage.addListener(function(response) {
         for (let i = 0; i < submitted_names.length; i++) {
             submitted.push({
                 "name": submitted_names[i].innerText,
+                "course_name": course_name,
                 "start_date": submitted_start_dates[i].innerText,
                 "due_date": submitted_due_dates[i].innerText,
                 "students_count": submitted_students_counts[i].innerText.match(students_count_regex).join("/"),
@@ -80,6 +84,7 @@ port.onMessage.addListener(function(response) {
         for (let i = 0; i < overdue_names.length; i++) {
             overdue.push({
                 "name": overdue_names[i].innerText,
+                "course_name": course_name,
                 "start_date": overdue_start_dates[i].innerText,
                 "due_date": overdue_due_dates[i].innerText,
                 "students_count": overdue_students_counts[i].innerText.match(students_count_regex).join("/"),
@@ -153,7 +158,7 @@ function render_table(type, data) {
     let container = document.getElementById(`${type}-container`);
     for (let i = 0; i < data.length; i++) {
         let row = `
-        <td><a href="${data[i]["link"]}" target="_blank">${data[i]["name"]}</a></td>
+        <td><a href="${data[i]["link"]}" target="_blank">${data[i]["name"]}</a><br><span>(${data[i]["course_name"]})</span></td>
         <td>${data[i]["start_date"]}</td>
         <td>${data[i]["due_date"]}</td>
         <td>${data[i]["students_count"]}</td>
