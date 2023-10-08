@@ -158,7 +158,7 @@ function render_table(type, data) {
     let container = document.getElementById(`${type}-container`);
     for (let i = 0; i < data.length; i++) {
         let row = `
-        <td><a href="${data[i]["link"]}" target="_blank">${data[i]["name"]}</a><br><span>(${data[i]["course_name"]})</span></td>
+        <td><a href="${data[i]["link"]}" target="_blank" title="${data[i]["name"]}(${data[i]["course_name"]})">${data[i]["name"]}</a></td>
         <td>${data[i]["start_date"]}</td>
         <td>${data[i]["due_date"]}</td>
         <td>${data[i]["students_count"]}</td>
