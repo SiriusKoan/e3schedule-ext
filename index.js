@@ -95,9 +95,9 @@ port.onMessage.addListener(function(response) {
         renderTable("overdue", overdue);
         // save update time
         chrome.storage.local.set({
-            "update_time": new Date().getTime()
+            "update-time": new Date().getTime()
         }, function() {
-            console.log("update_time saved");
+            console.log("update-time saved");
         });
     }
 });
@@ -170,8 +170,8 @@ function renderTable(type, data) {
 
 window.onload = function() {
     // get cache data from local storage
-    chrome.storage.local.get(["in_progress", "submitted", "overdue", "update_time"], function(data) {
-        const timeDiff = (new Date() - new Date(data["update_time"])) / 1000;
+    chrome.storage.local.get(["in-progress", "submitted", "overdue", "update-time"], function(data) {
+        const timeDiff = (new Date() - new Date(data["update-time"])) / 1000;
         if (data["in-progress"] && data["submitted"] && data["overdue"] && timeDiff < 60 * 60 * 1) {
             renderTable("in-progress", data["in-progress"]);
             renderTable("submitted", data["submitted"]);
@@ -189,4 +189,19 @@ document.getElementById("refresh-btn").addEventListener("click", function() {
     flushCache();
     flushTable();
     fetchCourseData();
+});
+
+document.getElementById("in-progress-title").addEventListener("click", function() {
+    const container = document.getElementById("in-progress-container");
+    container.classList.toggle("hidden");
+});
+
+document.getElementById("submitted-title").addEventListener("click", function() {
+    const container = document.getElementById("submitted-container");
+    container.classList.toggle("hidden");
+});
+
+document.getElementById("overdue-title").addEventListener("click", function() {
+    const container = document.getElementById("overdue-container");
+    container.classList.toggle("hidden");
 });
