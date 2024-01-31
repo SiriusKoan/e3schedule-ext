@@ -1,3 +1,5 @@
+BASE_URL = "https://e3p.nycu.edu.tw";
+
 // handle processing and rednering data
 const port = chrome.runtime.connect({
     name: "connection"
@@ -142,7 +144,7 @@ function flushTable() {
 
 function fetchCourseData() {
     chrome.cookies.get({
-        url: "https://e3.nycu.edu.tw/my/",
+        url: BASE_URL,
         name: "MoodleSession"
     }, function(d) {
         // fetch data

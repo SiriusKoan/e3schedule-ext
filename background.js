@@ -1,3 +1,5 @@
+BASE_URL = "https://e3p.nycu.edu.tw";
+
 // handle fetching data
 var options;
 
@@ -10,7 +12,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                         Cookie: `MoodleSession=${response["session"]}`
                     }
                 };
-                fetch("https://e3.nycu.edu.tw", options)
+                fetch(BASE_URL, options)
                     .then(res => {
                         return res.text();
                     })
@@ -21,7 +23,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                         });
                     })
             } else if (response["type"] == "course") {
-                let url = `https://e3.nycu.edu.tw/local/courseextension/index.php?courseid=${response["id"]}&scope=assignment`
+                let url = `${BASE_URL}/local/courseextension/index.php?courseid=${response["id"]}&scope=assignment`
                 fetch(url, options)
                     .then(res => {
                         return res.text();

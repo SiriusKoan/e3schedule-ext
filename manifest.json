@@ -4,7 +4,7 @@
     "version": "1.1",
     "manifest_version": 3,
     "permissions": ["cookies", "storage"],
-    "host_permissions": ["https://e3.nycu.edu.tw/*"],
+    "host_permissions": ["https://e3p.nycu.edu.tw/*"],
     "background": {
         "service_worker": "background.js"
     },
